@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-v2ray-accelerate" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/01/28/v2ray-accelerate/" class="article-date">
+  <time class="dt-published" datetime="2021-01-28T07:04:04.000Z" itemprop="datePublished">2021-01-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/01/28/v2ray-accelerate/">v2ray accelerate</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><!-- vim-markdown-toc GitLab -->
+
+<ul>
+<li><a href="#0-preparation">0. Preparation</a><ul>
+<li><a href="#01-a-high-speed-ip">0.1 A high-speed IP</a></li>
+<li><a href="#02-set-up-the-v2ray-environment-on-the-remote-server">0.2 Set up the V2ray environment on the remote server.</a></li>
+<li><a href="#03-prepare-a-resolved-domain-name">0.3 Prepare a resolved domain name</a></li>
+</ul>
+</li>
+<li><a href="#1-plan-a-use-cloudflare-workers-for-reverse-proxy">1. Plan A: Use Cloudflare Workers for reverse proxy</a><ul>
+<li><a href="#step1-create-a-worker">Step1: Create a Worker</a></li>
+<li><a href="#step2-enter-the-followed-code-into-the-red-box-of-the-picture">Step2: Enter the followed code into the red box of the picture.</a></li>
+<li><a href="#step3-test-whether-the-deployment-is-successful">Step3: Test whether the deployment is successful</a></li>
+<li><a href="#step4-configure-v2ray-client">Step4: Configure <strong>v2ray client</strong></a></li>
+<li><a href="#attention">Attention:</a></li>
+</ul>
+</li>
+<li><a href="#2-plan-b-use-cloudflare-cdn-directly">2. Plan B: Use Cloudflare CDN directly</a><ul>
+<li><a href="#step1-change-the-dns-proxy-status-to-proxied-in-the-management-background-of-cloudflare">Step1: Change the DNS proxy status to ‘Proxied’ in the management background of Cloudflare.</a></li>
+<li><a href="#step2-qv2ray-client-configuration">Step2: Qv2ray Client Configuration:</a></li>
+</ul>
+</li>
+<li><a href="#write-in-the-end">Write in the end</a><ul>
+<li><a href="#1-the-core-principles-of-both-plan-a-and-plan-b-is-using-the-free-cloudflare-cdn-to-accelerate">1. The core principles of both plan A and plan B is using the Free Cloudflare CDN to accelerate.</a></li>
+<li><a href="#2-the-high-quality-ip-address-may-need-to-be-screened-regularly-by-the-software-mentioned-before">2. The High-quality IP address may need to be screened regularly by the software mentioned before.</a></li>
+</ul>
+</li>
+</ul>
+<!-- vim-markdown-toc -->
+<h2 id="0-Preparation"><a href="#0-Preparation" class="headerlink" title="0. Preparation"></a>0. Preparation</h2><h3 id="0-1-A-high-speed-IP"><a href="#0-1-A-high-speed-IP" class="headerlink" title="0.1 A high-speed IP"></a>0.1 A high-speed IP</h3><ul>
+<li>Filering software:<a target="_blank" rel="noopener" href="https://github.com/hyl-xidian/better-cloudflare-ip">Better-cloudflare-ip</a>  <ul>
+<li>Find the preferred <strong>Cloudflare Anycast</strong> IP that suits your <strong>current</strong> network environment.</li>
+<li>Ps: The Windows Version of the software is recommended.</li>
+<li>This software(win version)has been uploaded to iCloud for backup.</li>
+</ul>
+</li>
+<li>Find a <strong>high-quality</strong> domain and use the ip behind it.<ul>
+<li>Ex: v2ex.com</li>
+</ul>
+</li>
+</ul>
+<h3 id="0-2-Set-up-the-V2ray-environment-on-the-remote-server"><a href="#0-2-Set-up-the-V2ray-environment-on-the-remote-server" class="headerlink" title="0.2 Set up the V2ray environment on the remote server."></a>0.2 Set up the V2ray environment on the remote server.</h3><ul>
+<li>Ps: This part is no difference with the normal process.</li>
+<li>The proxy mode of V2ray must be <code>vmess+Websockets+TLS</code>.</li>
+</ul>
+<h3 id="0-3-Prepare-a-resolved-domain-name"><a href="#0-3-Prepare-a-resolved-domain-name" class="headerlink" title="0.3 Prepare a resolved domain name"></a>0.3 Prepare a resolved domain name</h3><ul>
+<li><p><em>Firstly</em>, resolve the purchased domain name to the vps’s ip address in Cloudflare and add a A record.</p>
+<ul>
+<li>EX: tls.lhyxidian.xyz 65.49.202.173 DNS Only</li>
+</ul>
+</li>
+<li><p><em>Secondly</em>, change the Nameserver to <code>xxx.ns.cloudflare.com</code> in the management background of namesilo.</p>
+</li>
+<li><p><em>Thirdly</em>, check whether the domain name is resolved successfully or not.</p>
+<ul>
+<li>You can just ping the domain name if there is no DNS buffer about this domain.</li>
+<li>If you don’t active CDN, there should show the Ip address of your vps.</li>
+</ul>
+</li>
+</ul>
+<h2 id="1-Plan-A-Use-Cloudflare-Workers-for-reverse-proxy"><a href="#1-Plan-A-Use-Cloudflare-Workers-for-reverse-proxy" class="headerlink" title="1. Plan A: Use Cloudflare Workers for reverse proxy"></a>1. Plan A: Use Cloudflare Workers for reverse proxy</h2><h3 id="Step1-Create-a-Worker"><a href="#Step1-Create-a-Worker" class="headerlink" title="Step1: Create a Worker"></a>Step1: Create a Worker</h3><p><a target="_blank" rel="noopener" href="https://imgchr.com/i/DVU7QA"><img src="https://s3.ax1x.com/2020/11/17/DVU7QA.png" alt="DVU7QA.png"></a></p>
+<h3 id="Step2-Enter-the-followed-code-into-the-red-box-of-the-picture"><a href="#Step2-Enter-the-followed-code-into-the-red-box-of-the-picture" class="headerlink" title="Step2: Enter the followed code into the red box of the picture."></a>Step2: Enter the followed code into the red box of the picture.</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">addEventListener(</span><br><span class="line">    &quot;fetch&quot;, event &#x3D;&gt; &#123;</span><br><span class="line">        let url &#x3D; new URL(event.request.url);</span><br><span class="line">        url.hostname &#x3D; &quot;$YOUR_DOMAIN_NAME&quot;;</span><br><span class="line">        let request &#x3D; new Request(url, event.request);</span><br><span class="line">        event.respondWith(</span><br><span class="line">            fetch(request)</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://imgchr.com/i/DVdu4S"><img src="https://s3.ax1x.com/2020/11/17/DVdu4S.png" alt="DVdu4S.png"></a></p>
+<h3 id="Step3-Test-whether-the-deployment-is-successful"><a href="#Step3-Test-whether-the-deployment-is-successful" class="headerlink" title="Step3: Test whether the deployment is successful"></a>Step3: Test whether the deployment is successful</h3><ul>
+<li>Clik the <code>send</code> button</li>
+<li>Check whether the response is as same as the previous case.  <blockquote>
+<p>Previous Case:<br>Enter <code>https://tls.xxxxxxxxx.xyz</code> into the browser’s address bar and press Enter key, you will get a <code>Bad Requst</code> response.</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="Step4-Configure-v2ray-client"><a href="#Step4-Configure-v2ray-client" class="headerlink" title="Step4: Configure v2ray client"></a>Step4: Configure <strong>v2ray client</strong></h3><blockquote>
+<p>Use Qv2ray Client for example.  </p>
+</blockquote>
+<ol>
+<li>Enter the <strong>chosen high-quality IP</strong> address into the <code>&quot;主机/ipv4 address&quot;</code></li>
+<li>Enter the <strong>Worker Address</strong> into the <code>&quot;Host| &quot;</code> and <code>&quot;TLS Server:&quot;</code><ul>
+<li>Like: xxx.SUBDOMAIN(xxx.735835509.workers.dev)<br><a target="_blank" rel="noopener" href="https://imgchr.com/i/DVyeMD"><img src="https://s3.ax1x.com/2020/11/17/DVyeMD.png" alt="DVyeMD.png"></a><br><a target="_blank" rel="noopener" href="https://imgchr.com/i/DV6FmQ"><img src="https://s3.ax1x.com/2020/11/17/DV6FmQ.png" alt="DV6FmQ.png"></a></li>
+</ul>
+</li>
+</ol>
+<h3 id="Attention"><a href="#Attention" class="headerlink" title="Attention:"></a>Attention:</h3><p><strong>In this method, the DNS proxy status of domain in the management background of Cloudflare must be ‘DNS only’.</strong></p>
+<h2 id="2-Plan-B-Use-Cloudflare-CDN-directly"><a href="#2-Plan-B-Use-Cloudflare-CDN-directly" class="headerlink" title="2. Plan B: Use Cloudflare CDN directly"></a>2. Plan B: Use Cloudflare CDN directly</h2><h3 id="Step1-Change-the-DNS-proxy-status-to-‘Proxied’-in-the-management-background-of-Cloudflare"><a href="#Step1-Change-the-DNS-proxy-status-to-‘Proxied’-in-the-management-background-of-Cloudflare" class="headerlink" title="Step1: Change the DNS proxy status to ‘Proxied’ in the management background of Cloudflare."></a>Step1: Change the DNS proxy status to ‘Proxied’ in the management background of Cloudflare.</h3><blockquote>
+<p>This may take five or more minutes to active this change. Please wait patiently.  </p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://imgchr.com/i/DV24BD"><img src="https://s3.ax1x.com/2020/11/17/DV24BD.png" alt="DV24BD.png"></a></p>
+<h3 id="Step2-Qv2ray-Client-Configuration"><a href="#Step2-Qv2ray-Client-Configuration" class="headerlink" title="Step2: Qv2ray Client Configuration:"></a>Step2: Qv2ray Client Configuration:</h3><ul>
+<li>Replace vps’s ip with the chosen high-quality IP</li>
+<li>The <code>&quot;Host| &quot;</code> and the <code>&quot;TLS Server:&quot;</code> is still the domain name you have purchased before. EX: tls.xxx.xyz<br><a target="_blank" rel="noopener" href="https://imgchr.com/i/DVRvxx"><img src="https://s3.ax1x.com/2020/11/17/DVRvxx.png" alt="DVRvxx.png"></a></li>
+</ul>
+<h2 id="Write-in-the-end"><a href="#Write-in-the-end" class="headerlink" title="Write in the end"></a>Write in the end</h2><h3 id="1-The-core-principles-of-both-plan-A-and-plan-B-is-using-the-Free-Cloudflare-CDN-to-accelerate"><a href="#1-The-core-principles-of-both-plan-A-and-plan-B-is-using-the-Free-Cloudflare-CDN-to-accelerate" class="headerlink" title="1. The core principles of both plan A and plan B is using the Free Cloudflare CDN to accelerate."></a>1. The core principles of both plan A and plan B is using the Free Cloudflare CDN to accelerate.</h3><h3 id="2-The-High-quality-IP-address-may-need-to-be-screened-regularly-by-the-software-mentioned-before"><a href="#2-The-High-quality-IP-address-may-need-to-be-screened-regularly-by-the-software-mentioned-before" class="headerlink" title="2. The High-quality IP address may need to be screened regularly by the software mentioned before."></a>2. The High-quality IP address may need to be screened regularly by the software mentioned before.</h3>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/01/28/v2ray-accelerate/" data-id="ckkgik2dv0000h1cm123x83rw" data-title="v2ray accelerate" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/28/v2ray-accelerate/">v2ray accelerate</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
